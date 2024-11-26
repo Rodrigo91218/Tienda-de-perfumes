@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura {{ factura.Factura.numero_factura }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .factura {
+            margin: 20px;
+        }
+        .factura h1 {
+            text-align: center;
+        }
+        .factura table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .factura table, .factura th, .factura td {
+            border: 1px solid #ddd;
+        }
+        .factura th, .factura td {
+            padding: 8px;
+            text-align: left;
+        }
+        .factura .btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 0;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .factura .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="factura">
+        <h1>Factura {{ factura.Factura.numero_factura }}</h1>
+        <p>Fecha: {{ factura.Factura.fecha }}</p>
+        <p>Cliente: {{ factura.Cliente.nombre }} {{ factura.Cliente.apellido }}</p>
+        <p>Domicilio: {{ factura.Cliente.domicilio }}</p>
+        <p>Localidad: {{ factura.Cliente.localidad }} - Código Postal: {{ factura.Cliente.codigo_postal }}</p>
+        <p>Teléfono: {{ factura.Cliente.telefono }} - Email: {{ factura.Cliente.email }}</p>
+        <p>IVA: {{ factura.Factura.iva * 100 }}%</p>
+
+        <h2>Detalles del Pedido</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detalle in detalles_pedido %}
+                <tr>
+                    <td>{{ detalle.producto_nombre }}</td>
+                    <td>{{ detalle.cantidad }}</td>
+                    <td>{{ detalle.precio_unitario }}</td>
+                    <td>{{ detalle.cantidad * detalle.precio_unitario }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Total: {{ factura.Factura.total }}</h3>
+
+        <!-- Botones para descargar la factura en PDF -->
+        <a href="{{ url_for('descargar_factura_pdf', factura_id=factura.Factura.id) }}" class="btn">Descargar PDF</a>
+
+        <!-- Otra opción con un botón -->
+        <form action="{{ url_for('descargar_factura_pdf', factura_id=factura.Factura.id) }}" method="get">
+            <button type="submit" class="btn">Descargar Factura</button>
+        </form>
+    </div>
+</body>
+</html>
+
